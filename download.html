@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Tracker - App Download & Installation Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0a0f1d;
+            --card-bg: rgba(16, 24, 48, 0.95);
+            --primary: #00ffcc;
+            --secondary: #ff3366;
+            --warning-yellow: #ffcc00;
+            --text-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', 'Orbitron', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(10, 15, 29, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .brand-name span { color: var(--primary); }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .audio-toggle-btn {
+            background: rgba(255, 51, 102, 0.2);
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+        }
+
+        .audio-toggle-btn.playing {
+            animation: audio-bounce 0.8s infinite alternate;
+            background: var(--secondary);
+            color: #000;
+        }
+
+        @keyframes audio-bounce {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 51, 102, 0.6); }
+            100% { transform: scale(1.15); box-shadow: 0 0 25px rgba(255, 51, 102, 1); }
+        }
+
+        .badge-live {
+            background: rgba(0, 255, 204, 0.15);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 204, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+        }
+
+        .download-hero {
+            text-align: center;
+            padding: 40px 8% 30px 8%;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .download-hero h1 {
+            font-size: 2.3rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .download-hero h1 span { color: var(--primary); }
+
+        .voice-caption-box {
+            background: rgba(16, 24, 48, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin: 0 auto 30px auto;
+            max-width: 650px;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .voice-caption-text {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-weight: 600;
+        }
+
+        .voice-caption-text span { color: var(--warning-yellow); }
+
+        .animated-line-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .animated-red-line {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary), var(--warning-yellow));
+            box-shadow: 0 0 10px var(--secondary);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .map-result-box {
+            background: #0d1629;
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            text-align: center;
+            max-width: 450px;
+            margin: 0 auto 30px auto;
+        }
+
+        .map-viewport {
+            height: 160px;
+            background: #111d33 radial-gradient(circle, rgba(0, 255, 204, 0.1) 0%, rgba(10, 15, 29, 0.9) 80%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .map-grid-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 255, 204, 0.08) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 204, 0.08) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .bd-map-shape {
+            position: relative;
+            font-size: 1rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+            border: 2px dashed rgba(0, 255, 204, 0.4);
+            padding: 15px 25px;
+            border-radius: 50%;
+            background: rgba(0, 255, 204, 0.05);
+        }
+
+        .map-pin {
+            position: absolute;
+            color: var(--secondary);
+            font-size: 2rem;
+            animation: pin-bounce 1s ease infinite alternate;
+        }
+
+        @keyframes pin-bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+
+        .map-info-padding { padding: 15px; }
+
+        .map-info-padding h4 {
+            color: var(--warning-yellow);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .map-info-padding p { color: #a0aec0; font-size: 0.88rem; }
+
+        .btn-download-glow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            padding: 18px 25px;
+            background: linear-gradient(135deg, var(--warning-yellow), var(--secondary));
+            color: #000;
+            font-size: 1.2rem;
+            font-weight: 900;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
+            animation: glowing-btn 1.5s infinite alternate;
+        }
+
+        @keyframes glowing-btn {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 204, 0, 0.8), 0 0 30px rgba(255, 51, 102, 0.6); }
+            100% { transform: scale(1.03); box-shadow: 0 0 25px rgba(255, 204, 0, 1), 0 0 45px rgba(255, 51, 102, 0.9); }
+        }
+
+        .guide-section {
+            padding: 50px 8% 80px 8%;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.5s;
+        }
+
+        /* Active Glow Style for Guide Section when Audio 2 is playing */
+        .guide-section.active-guide {
+            background: rgba(0, 255, 204, 0.05);
+            box-shadow: inset 0 0 30px rgba(0, 255, 204, 0.2);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.1rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .section-title span { color: var(--primary); }
+
+        .section-desc {
+            text-align: center;
+            color: #a0aec0;
+            max-width: 650px;
+            margin: 0 auto 40px auto;
+            font-size: 1rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .screenshot-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 14px;
+            padding: 3px;
+            background: linear-gradient(45deg, var(--warning-yellow), var(--secondary), var(--primary), var(--warning-yellow));
+            background-size: 300% 300%;
+            animation: border-anim 4s linear infinite;
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+
+        @keyframes border-anim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .step-img {
+            width: 100%;
+            height: 270px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #000;
+            display: block;
+        }
+
+        .step-card h4 {
+            color: #fff;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .step-card p {
+            color: #a0aec0;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #718096;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Elements -->
+    <audio id="guideAudio1" src="voice_guide.mp3" preload="auto"></audio>
+    <audio id="guideAudio2" src="install_guide.mp3" preload="auto"></audio>
+
+    <header>
+        <a href="index.html" class="logo-container">
+            <img src="logo.jpg" alt="Ghost Tracker Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/45/00ffcc/000000?text=GT'">
+            <div class="brand-name">GHOST <span>TRACKER</span></div>
+        </a>
+        <div class="header-controls">
+            <button class="audio-toggle-btn" id="audioToggleBtn" title="ভয়েস মিউট/প্লে করুন" onclick="toggleAudio()">
+                <i class="fa-solid fa-volume-high" id="audioIcon"></i>
+            </button>
+            <div class="badge-live">
+                <div class="pulse-dot"></div>
+                READY TO DOWNLOAD
+            </div>
+        </div>
+    </header>
+
+    <section class="download-hero">
+        <h1>সম্পূর্ণ লোকেশন দেখতে <span>অ্যাপটি ইন্সটল করুন</span></h1>
+        
+        <div class="voice-caption-box">
+            <p class="voice-caption-text">
+                "অভিনন্দন! আপনার কাঙ্ক্ষিত মোবাইল নম্বরটির স্যাটেলাইট সিগন্যাল সফলভাবে পাওয়া গেছে এবং এর অবস্থান <span>বাংলাদেশ জোনে</span> নির্দিষ্ট করা হয়েছে। সম্পূর্ণ ও নিখুঁত পিনপয়েন্ট জিপিএস লোকেশন সরাসরি দেখতে এখনই নিচে দেওয়া অ্যাপটি আপনার ফোনে ইনস্টল করুন।"
+            </p>
+            <div class="animated-line-container">
+                <div class="animated-red-line" id="redLine"></div>
+            </div>
+        </div>
+
+        <div class="map-result-box">
+            <div class="map-viewport">
+                <div class="map-grid-overlay"></div>
+                <div class="bd-map-shape">BANGLADESH ZONE</div>
+                <div class="map-pin"><i class="fa-solid fa-location-dot"></i></div>
+            </div>
+            <div class="map-info-padding">
+                <h4><i class="fa-solid fa-satellite"></i> লোকেশন লকড: বাংলাদেশ</h4>
+                <p>পিনপয়েন্ট ডাটা দেখতে নিচে ক্লিক করে অ্যাপটি চালু করুন।</p>
+            </div>
+        </div>
+
+        <!-- Download Button -->
+        <a href="ghost_tracking.apk" download class="btn-download-glow" onclick="startInstallGuideFlow()">
+            <i class="fa-solid fa-download"></i> APK ডাউনলোড করুন (8.07 MB)
+        </a>
+        
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> হোম পেজে ফিরে যান</a>
+    </section>
+
+    <!-- Installation Guide Section -->
+    <section class="guide-section" id="guide">
+        <h2 class="section-title">অ্যাপ ইন্সটল করার সহজ <span>নির্দেশিকা</span></h2>
+        <p class="section-desc" id="guideDesc">ডাউনলোড করার পর কোনো সিকিউরিটি ওয়ার্নিং আসলে নিচের ৪টি ধাপ অনুসরণ করে ইনস্টল সম্পন্ন করে নিন:</p>
+
+        <div class="steps-grid">
+            <div class="step-card" id="step1">
+                <div class="screenshot-wrapper">
+                    <img src="IMG_20261017_192151.jpg" alt="Step 1" class="step-img">
+                </div>
+                <h4>ধাপ ১: Harmful App Blocked</h4>
+                <p>ওয়ার্নিং আসলে নিচে থাকা কমলা তীরচিহ্নিত <strong style="color:var(--primary);">More details</strong> অপশনে ক্লিক করুন।</p>
+            </div>
+
+            <div class="step-card" id="step2">
+                <div class="screenshot-wrapper">
+                    <img src="IMG_20261017_192318.jpg" alt="Step 2" class="step-img">
+                </div>
+                <h4>ধাপ ২: App Scan Recommended</h4>
+                <p>অথবা এই স্ক্রিন আসলে একইভাবে <strong style="color:var(--primary);">More details</strong> অপশনে প্রেস করুন।</p>
+            </div>
+
+            <div class="step-card" id="step3">
+                <div class="screenshot-wrapper">
+                    <img src="IMG_20261017_192515.jpg" alt="Step 3" class="step-img">
+                </div>
+                <h4>ধাপ ৩: স্ক্যান ছাড়া ইনস্টল</h4>
+                <p>ওপেন হওয়ার পর প্রদর্শিত <strong style="color:var(--warning-yellow);">Install without scanning</strong> বাটনে ক্লিক দিন।</p>
+            </div>
+
+            <div class="step-card" id="step4">
+                <div class="screenshot-wrapper">
+                    <img src="IMG_20261017_192632.jpg" alt="Step 4" class="step-img">
+                </div>
+                <h4>ধাপ ৪: Install Anyway</h4>
+                <p>বিকল্প পপ-আপে সরাসরি <strong style="color:var(--secondary);">Install anyway</strong> অপশনটি সিলেক্ট করে নিন।</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Ghost Tracker Pro. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const audio1 = document.getElementById('guideAudio1');
+        const audio2 = document.getElementById('guideAudio2');
+        const toggleBtn = document.getElementById('audioToggleBtn');
+        const icon = document.getElementById('audioIcon');
+        const redLine = document.getElementById('redLine');
+        const guideSection = document.getElementById('guide');
+
+        let currentAudio = audio1;
+
+        // Auto Play First Audio on Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            playAudio(audio1);
+        });
+
+        document.body.addEventListener('click', function startAudioOnInteraction() {
+            if (currentAudio.paused && currentAudio.currentTime === 0) {
+                playAudio(currentAudio);
+            }
+            document.body.removeEventListener('click', startAudioOnInteraction);
+        }, { once: true });
+
+        function playAudio(aud) {
+            if(currentAudio && currentAudio !== aud) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            currentAudio = aud;
+            aud.play().then(() => {
+                toggleBtn.classList.add('playing');
+                icon.className = 'fa-solid fa-volume-high';
+            }).catch(() => {
+                toggleBtn.classList.remove('playing');
+                icon.className = 'fa-solid fa-volume-xmark';
+            });
+        }
+
+        function toggleAudio() {
+            if (currentAudio.paused) {
+                currentAudio.play();
+                toggleBtn.classList.add('playing');
+                icon.className = 'fa-solid fa-volume-high';
+            } else {
+                currentAudio.pause();
+                toggleBtn.classList.remove('playing');
+                icon.className = 'fa-solid fa-volume-xmark';
+            }
+        }
+
+        // Sync Audio 1 Progress Line
+        audio1.addEventListener('timeupdate', () => {
+            if (audio1.duration) {
+                const pct = (audio1.currentTime / audio1.duration) * 100;
+                redLine.style.width = pct + '%';
+            }
+        });
+
+        audio1.addEventListener('ended', () => {
+            toggleBtn.classList.remove('playing');
+            redLine.style.width = '100%';
+        });
+
+        // Triggered when Download Button is clicked
+        function startInstallGuideFlow() {
+            setTimeout(() => {
+                // Smooth Scroll to Guide
+                guideSection.scrollIntoView({ behavior: 'smooth' });
+                guideSection.classList.add('active-guide');
+
+                // Play Second Audio Guide
+                playAudio(audio2);
+            }, 400);
+        }
+
+        audio2.addEventListener('ended', () => {
+            toggleBtn.classList.remove('playing');
+            guideSection.classList.remove('active-guide');
+        });
+    </script>
+</body>
+</html>

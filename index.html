@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost Tracker - Live GPS & Phone Location Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0a0f1d;
+            --card-bg: rgba(16, 24, 48, 0.95);
+            --primary: #00ffcc;
+            --secondary: #ff3366;
+            --warning-yellow: #ffcc00;
+            --text-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', 'Orbitron', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(10, 15, 29, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .brand-name span { color: var(--primary); }
+
+        .badge-live {
+            background: rgba(0, 255, 204, 0.15);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 204, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+        }
+
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 8%;
+            min-height: calc(100vh - 80px);
+            gap: 40px;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 320px;
+        }
+
+        .hero-title {
+            font-size: 2.6rem;
+            line-height: 1.3;
+            color: #fff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero-title span { color: var(--primary); }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #a0aec0;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .tracker-box {
+            background: linear-gradient(135deg, rgba(16, 24, 48, 0.95), rgba(26, 37, 68, 0.95));
+            border: 2px solid var(--primary);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 35px rgba(0, 255, 204, 0.25);
+            max-width: 520px;
+        }
+
+        .tracker-box label {
+            display: block;
+            font-size: 1.05rem;
+            color: #fff;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .tracker-box label i { color: var(--primary); margin-right: 6px; }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--warning-yellow);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+        }
+
+        .btn-track {
+            padding: 0 25px;
+            background: linear-gradient(135deg, var(--primary), #00b386);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.05rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.4);
+        }
+
+        .btn-track:hover {
+            transform: translateY(-2px);
+            background: #fff;
+            color: #000;
+        }
+
+        #trackError {
+            color: #ff3366;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* Google Map Style Simulation Box */
+        .map-result-box {
+            display: none;
+            margin-top: 25px;
+            background: #0d1629;
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            text-align: center;
+        }
+
+        .map-viewport {
+            height: 180px;
+            background: #111d33 radial-gradient(circle, rgba(0, 255, 204, 0.1) 0%, rgba(10, 15, 29, 0.9) 80%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .map-grid-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 255, 204, 0.08) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 204, 0.08) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .bd-map-shape {
+            position: relative;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+            border: 2px dashed rgba(0, 255, 204, 0.4);
+            padding: 20px 30px;
+            border-radius: 50%;
+            background: rgba(0, 255, 204, 0.05);
+        }
+
+        .map-pin {
+            position: absolute;
+            color: var(--secondary);
+            font-size: 2.2rem;
+            animation: pin-bounce 1s ease infinite alternate;
+            filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.8));
+        }
+
+        @keyframes pin-bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .map-info-padding {
+            padding: 15px;
+        }
+
+        .map-info-padding h4 {
+            color: var(--warning-yellow);
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .map-info-padding p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-reveal-glow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--warning-yellow), var(--secondary));
+            color: #000;
+            font-size: 1.15rem;
+            font-weight: 900;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 25px rgba(255, 51, 102, 0.8);
+            animation: glowing-btn 1.5s infinite alternate;
+        }
+
+        @keyframes glowing-btn {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 204, 0, 0.8), 0 0 30px rgba(255, 51, 102, 0.6); }
+            100% { transform: scale(1.02); box-shadow: 0 0 25px rgba(255, 204, 0, 1), 0 0 45px rgba(255, 51, 102, 0.9); }
+        }
+
+        /* 6 Second Slow Loading Screen */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 8, 18, 0.94);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .loading-box {
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .loading-spinner-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .loading-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 7px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--warning-yellow), var(--secondary));
+            border-radius: 7px;
+            transition: width 0.1s linear;
+        }
+
+        .loading-status-text {
+            color: var(--primary);
+            font-size: 0.95rem;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Video Showcase Box */
+        .hero-visual {
+            flex: 1;
+            min-width: 320px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 4px;
+            background: linear-gradient(45deg, var(--warning-yellow), var(--secondary), var(--primary), var(--warning-yellow));
+            background-size: 300% 300%;
+            animation: border-anim 4s linear infinite;
+            box-shadow: 0 0 35px rgba(255, 51, 102, 0.35);
+        }
+
+        @keyframes border-anim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .features {
+            padding: 70px 8%;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #fff;
+            margin-bottom: 40px;
+        }
+
+        .section-title span { color: var(--primary); }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-box {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .feature-box:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-box h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-box p {
+            color: #a0aec0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.1rem; }
+            .hero { padding: 40px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="logo.jpg" alt="Ghost Tracker Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/45/00ffcc/000000?text=GT'">
+            <div class="brand-name">GHOST <span>TRACKER</span></div>
+        </div>
+        <div class="badge-live">
+            <div class="pulse-dot"></div>
+            SYSTEM ONLINE
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1 class="hero-title">যেকোনো ফোনের <span>লাইভ লোকেশন</span> ট্র্যাক করুন মুহূর্তেই</h1>
+            <p class="hero-subtitle">রিয়েল-টাইম স্যাটেলাইট ম্যাপিং সিস্টেমের মাধ্যমে যেকোনো বাংলাদেশি বা আন্তর্জাতিক নম্বরের জিপিএস লোকেশন সরাসরি খুঁজুন।</p>
+            
+            <div class="tracker-box">
+                <label for="phoneNum"><i class="fa-solid fa-location-crosshairs"></i> যার লোকেশন দেখতে চান তার মোবাইল নম্বর লিখুন:</label>
+                <div class="input-group">
+                    <input type="text" id="phoneNum" placeholder="017XXXXXXXX (১১ ডিজিট)" maxlength="15">
+                    <button class="btn-track" onclick="startTracking()">ট্র্যাক করুন</button>
+                </div>
+                
+                <div id="trackError"></div>
+
+                <!-- Interactive Google Map Result Box -->
+                <div class="map-result-box" id="mapResultBox">
+                    <div class="map-viewport">
+                        <div class="map-grid-overlay"></div>
+                        <div class="bd-map-shape">BANGLADESH ZONE</div>
+                        <div class="map-pin"><i class="fa-solid fa-location-dot"></i></div>
+                    </div>
+                    <div class="map-info-padding">
+                        <h4><i class="fa-solid fa-satellite"></i> লোকেশন প্রাপ্তি: বাংলাদেশ জোন</h4>
+                        <p>সিগন্যাল লক করা হয়েছে। পিনপয়েন্ট লাইভ লোকেশন প্রস্তুত।</p>
+                        
+                        <a href="download.html" class="btn-reveal-glow">
+                            <i class="fa-solid fa-map-location-dot"></i> সম্পূর্ণ লোকেশন দেখুন
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="tracker_demo.mp4" type="video/mp4">
+                        আপনার ব্রাউজার ভিডিও ট্যাগ সাপোর্ট করে না।
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6 Second Slow Loading Screen -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="loading-spinner-icon"><i class="fa-solid fa-radar"></i></div>
+            <div class="loading-title">স্যাটেলাইট লিংক তৈরি হচ্ছে...</div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div class="loading-status-text" id="loadingStatus">গ্লোবাল জিপিএস স্যাটেলাইট কানেক্ট করা হচ্ছে: 0%</div>
+        </div>
+    </div>
+
+    <section class="features">
+        <h2 class="section-title">কেন ব্যবহার করবেন <span>Ghost Tracker?</span></h2>
+        <div class="feature-grid">
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                <h4>স্যাটেলাইট জিপিএস</h4>
+                <p>সবচেয়ে আধুনিক স্যাটেলাইট নেটওয়ার্ক ব্যবহার করে রিয়েল-টাইম পিনপয়েন্ট জিপিএস লোকেশন ট্র্যাক করার সুবিধা।</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fa-solid fa-user-secret"></i></div>
+                <h4>১০০% গোপনীয় ও নিরাপদ</h4>
+                <p>যাকে ট্র্যাক করা হচ্ছে তার ফোনে কোনো ধরনের নোটিফিকেশন বা অ্যালার্ট যাবে না, সম্পূর্ণ গোপনীয়তা বজায় থাকে।</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+                <h4>সুপার ফাস্ট রিয়েল-টাইম</h4>
+                <p>মাত্র কয়েক সেকেন্ডের মধ্যে যেকোনো মোবাইল টাওয়ার এবং জিও-লোকেশন নিখুঁতভাবে স্ক্যান করে দেয়।</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Ghost Tracker Pro. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function startTracking() {
+            const numInput = document.getElementById('phoneNum').value.trim();
+            const errorDiv = document.getElementById('trackError');
+            const mapResultBox = document.getElementById('mapResultBox');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const progressBar = document.getElementById('progressBar');
+            const loadingStatus = document.getElementById('loadingStatus');
+
+            if (numInput.length !== 11 || isNaN(numInput)) {
+                errorDiv.innerText = "দয়া করে সঠিক ১১ ডিজিটের মোবাইল নম্বর লিখুন (যেমন: 017xxxxxxxx)!";
+                mapResultBox.style.display = "none";
+                return;
+            }
+
+            errorDiv.innerText = "";
+            mapResultBox.style.display = "none";
+            loadingOverlay.style.display = "flex";
+
+            let progress = 0;
+            const statuses = [
+                "গ্লোবাল জিপিএস স্যাটেলাইট কানেক্ট করা হচ্ছে...",
+                "জিএসএম মোবাইল টাওয়ার সিগন্যাল স্ক্যানিং...",
+                "বাংলাদেশ রিজিওনাল জোন ডিটেক্ট করা হচ্ছে...",
+                "এনক্রিপ্টেড পিনপয়েন্ট ডাটা রিসিভ করা হচ্ছে...",
+                "লোকেশন সিগন্যাল সফলভাবে প্রাপ্ত হয়েছে!"
+            ];
+
+            // Slow timer setup (Runs for approx 6 seconds)
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = progress + '%';
+                
+                if (progress <= 25) {
+                    loadingStatus.innerText = statuses[0] + ` (${progress}%)`;
+                } else if (progress <= 50) {
+                    loadingStatus.innerText = statuses[1] + ` (${progress}%)`;
+                } else if (progress <= 75) {
+                    loadingStatus.innerText = statuses[2] + ` (${progress}%)`;
+                } else if (progress <= 95) {
+                    loadingStatus.innerText = statuses[3] + ` (${progress}%)`;
+                } else {
+                    loadingStatus.innerText = statuses[4] + ` (${progress}%)`;
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingOverlay.style.display = "none";
+                        mapResultBox.style.display = "block";
+                        mapResultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 500);
+                }
+            }, 60); // 60ms * 100 steps = 6000ms = 6 Seconds
+        }
+    </script>
+</body>
+</html>
